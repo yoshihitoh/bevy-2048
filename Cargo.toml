@@ -1,0 +1,9 @@
+[package]
+name = "bevy-2048"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+anyhow = "1.0.95"
+bevy = "0.15.2"
+bevy_prototype_lyon = "0.13.0"
