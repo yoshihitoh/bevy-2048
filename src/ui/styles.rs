@@ -41,14 +41,66 @@ pub mod slot {
     }
 }
 
-pub mod cell {
+pub mod tile {
+    use crate::game::Value;
     use crate::ui::styles::srgba_hex;
     use bevy::color::Color;
+    use bevy::utils::HashMap;
+    use std::cell::{LazyCell, OnceCell};
+    use std::sync::LazyLock;
 
-    pub const CELL_SIZE: f32 = 100.0;
+    #[derive(Clone)]
+    struct TileColor {
+        background: &'static str,
+        foreground: &'static str,
+    }
+
+    const DEFAULT_TILE_COLOR: TileColor = TileColor {
+        background: "#000000",
+        foreground: "#ffffff",
+    };
+
+    const TILE_COLORS: &[(u32, TileColor)] = &[
+        (
+            2,
+            TileColor {
+                background: "#ede5db",
+                foreground: "#726554",
+            },
+        ),
+        (
+            4,
+            TileColor {
+                background: "#e8d9ba",
+                foreground: "#726554",
+            },
+        ),
+        (
+            8,
+            TileColor {
+                background: "#e7b37f",
+                foreground: "#feffff",
+            },
+        ),
+    ];
+
+    static TILE_COLORS_BY_VALUE: LazyLock<HashMap<u32, TileColor>> =
+        LazyLock::new(|| TILE_COLORS.iter().map(|(v, c)| (*v, c.clone())).collect());
+
+    pub const TILE_SIZE: f32 = 100.0;
     pub const BORDER_RADII: f32 = 12.0;
 
-    pub fn background_color_for(_value: u32) -> Color {
-        srgba_hex("#baad9a").into()
+    fn tile_color_for(value: Value) -> &'static TileColor {
+        TILE_COLORS_BY_VALUE
+            .get(&value.as_u32())
+            .unwrap_or(&&DEFAULT_TILE_COLOR)
+    }
+
+    pub fn background_color_for(value: Value) -> Color {
+        srgba_hex(tile_color_for(value).background).into()
+    }
+
+    pub fn foreground_color_for(value: Value) -> Color {
+        srgba_hex(tile_color_for(value).foreground).into()
     }
 }
