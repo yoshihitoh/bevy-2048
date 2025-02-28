@@ -88,7 +88,7 @@ fn init(
     for r in 0..board.grid.rows {
         for c in 0..board.grid.cols {
             let x = (-board_size / 2.0) + (spacing / 2.0) + (c as f32 * spacing);
-            let y = (-board_size / 2.0) + (spacing / 2.0) + (r as f32 * spacing);
+            let y = (board_size / 2.0) - (spacing / 2.0) - (r as f32 * spacing);
 
             commands.entity(board_entity).with_children(|parent| {
                 let slot_no = r * board.grid.rows + c;
